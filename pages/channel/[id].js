@@ -1,407 +1,324 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
-import { Eye } from 'lucide-react';
-import SonicWalletConnect from '../../components/SonicWalletConnect';
-import {
-  ArrowLeft, Search, Bell, User, Video, Users, Play,
-  ThumbsUp, Share, Calendar, Globe, Twitter, Instagram
-} from 'lucide-react';
+
+// Components
+import ChannelHeader from '../../components/channel/ChannelHeader';
+import ChannelTabs from '../../components/channel/ChannelTabs';
+import VideoGrid from '../../components/channel/VideoGrid';
+import AboutTab from '../../components/channel/AboutTab';
+import CommunityTab from '../../components/channel/CommunityTab';
+import PlaylistsTab from '../../components/channel/PlaylistsTab';
+import ConnectionStatus from '../../components/ConnectionStatus';
+import ParticleBackground from '../../components/ui/ParticleBackground';
+
+// Mock data (replace with actual API calls)
+const mockChannels = {
+  'web3innovators': {
+    id: 'web3innovators',
+    name: 'Web3 Innovators',
+    description: 'Building the future of decentralized media and Web3 technologies. Tutorials, live coding, and insights into blockchain development.',
+    avatar: '/avatars/1.jpg',
+    banner: '/banners/1.jpg',
+    subscribers: '125K',
+    videos: '89',
+    isVerified: true,
+    isLive: false,
+    joinedDate: '2023-01-15',
+    totalViews: '2.4M',
+    earnings: '45,230 SONIC',
+    socialLinks: {
+      twitter: 'https://twitter.com/web3innovators',
+      website: 'https://web3innovators.com',
+      discord: 'https://discord.gg/web3innovators'
+    },
+    tags: ['Web3', 'Blockchain', 'Tutorials', 'Development', 'Sonic'],
+    isSubscribed: false
+  },
+  'cryptomasters': {
+    id: 'cryptomasters',
+    name: 'Crypto Masters',
+    description: 'Live trading, market analysis, and deep dives into cryptocurrency projects. Join us daily for live streams and expert insights.',
+    avatar: '/avatars/2.jpg',
+    banner: '/banners/2.jpg',
+    subscribers: '89K',
+    videos: '156',
+    isVerified: true,
+    isLive: true,
+    joinedDate: '2022-08-22',
+    totalViews: '1.8M',
+    earnings: '32,150 SONIC',
+    socialLinks: {
+      twitter: 'https://twitter.com/cryptomasters',
+      telegram: 'https://t.me/cryptomasters',
+      website: 'https://cryptomasters.io'
+    },
+    tags: ['Crypto', 'Trading', 'Live', 'Analysis', 'DeFi'],
+    isSubscribed: false
+  },
+  'nftcreatorpro': {
+    id: 'nftcreatorpro',
+    name: 'NFT Creator Pro',
+    description: 'Everything about NFT creation, minting, and marketing. From beginner guides to advanced techniques for successful NFT projects.',
+    avatar: '/avatars/3.jpg',
+    banner: '/banners/3.jpg',
+    subscribers: '156K',
+    videos: '234',
+    isVerified: true,
+    isLive: false,
+    joinedDate: '2023-03-10',
+    totalViews: '3.7M',
+    earnings: '78,450 SONIC',
+    socialLinks: {
+      twitter: 'https://twitter.com/nftcreatorpro',
+      instagram: 'https://instagram.com/nftcreatorpro',
+      opensea: 'https://opensea.io/nftcreatorpro'
+    },
+    tags: ['NFT', 'Art', 'Minting', 'Collections', 'Marketplace'],
+    isSubscribed: false
+  }
+};
+
+const mockVideos = {
+  'web3innovators': [
+    {
+      id: '1',
+      title: 'Building the Future of Decentralized Media on Sonic Blockchain',
+      views: '152K',
+      timestamp: '2 hours ago',
+      duration: '28:15',
+      thumbnail: '/thumbnails/1.jpg',
+      isLive: false,
+      earnings: '2,450 SONIC',
+      nft: { available: true, price: '0.5 ETH' }
+    },
+    {
+      id: '2',
+      title: 'Smart Contract Development - Complete Beginner Guide',
+      views: '98K',
+      timestamp: '3 days ago',
+      duration: '45:22',
+      thumbnail: '/thumbnails/2.jpg',
+      isLive: false,
+      earnings: '1,890 SONIC',
+      nft: { available: false }
+    },
+    {
+      id: '3',
+      title: 'Live: Q&A Session - Sonic Blockchain Updates',
+      views: '67K',
+      timestamp: '1 week ago',
+      duration: '1:15:30',
+      thumbnail: '/thumbnails/3.jpg',
+      isLive: true,
+      earnings: '3,210 SONIC',
+      nft: { available: true, price: '0.2 ETH' }
+    }
+  ],
+  'cryptomasters': [
+    {
+      id: '4',
+      title: 'Live: Bitcoin Price Analysis & Trading Strategy',
+      views: '45K',
+      timestamp: 'LIVE NOW',
+      duration: 'LIVE',
+      thumbnail: '/thumbnails/4.jpg',
+      isLive: true,
+      earnings: '1,560 SONIC',
+      nft: { available: false }
+    },
+    {
+      id: '5',
+      title: 'SONIC Token Deep Dive - Investment Potential',
+      views: '78K',
+      timestamp: '1 day ago',
+      duration: '32:18',
+      thumbnail: '/thumbnails/5.jpg',
+      isLive: false,
+      earnings: '2,340 SONIC',
+      nft: { available: true, price: '0.3 ETH' }
+    }
+  ],
+  'nftcreatorpro': [
+    {
+      id: '6',
+      title: 'Creating Your First NFT Collection - Step by Step',
+      views: '210K',
+      timestamp: '2 days ago',
+      duration: '38:45',
+      thumbnail: '/thumbnails/6.jpg',
+      isLive: false,
+      earnings: '4,210 SONIC',
+      nft: { available: true, price: '0.1 ETH' }
+    },
+    {
+      id: '7',
+      title: 'NFT Marketing Strategies That Actually Work',
+      views: '134K',
+      timestamp: '1 week ago',
+      duration: '29:12',
+      thumbnail: '/thumbnails/7.jpg',
+      isLive: false,
+      earnings: '3,150 SONIC',
+      nft: { available: false }
+    }
+  ]
+};
+
+const mockCommunityPosts = [
+  {
+    id: 1,
+    user: {
+      name: 'BlockchainBuddy',
+      avatar: '/avatars/user1.jpg',
+      isVerified: true
+    },
+    text: 'Just implemented the smart contract tutorial from last week - worked perfectly! Thanks for the great content! 🚀',
+    timestamp: '2 hours ago',
+    likes: 24,
+    comments: 8,
+    tips: '5 SONIC'
+  },
+  {
+    id: 2,
+    user: {
+      name: 'Web3Wizard',
+      avatar: '/avatars/user2.jpg',
+      isVerified: false
+    },
+    text: 'Can we get a tutorial on integrating Sonic with React applications? That would be super helpful!',
+    timestamp: '5 hours ago',
+    likes: 18,
+    comments: 12,
+    tips: '2 SONIC'
+  }
+];
+
+const mockPlaylists = [
+  {
+    id: 1,
+    title: 'Sonic Blockchain Masterclass',
+    videoCount: 12,
+    thumbnail: '/thumbnails/playlist1.jpg',
+    views: '450K'
+  },
+  {
+    id: 2,
+    title: 'Web3 Development Series',
+    videoCount: 8,
+    thumbnail: '/thumbnails/playlist2.jpg',
+    views: '320K'
+  },
+  {
+    id: 3,
+    title: 'Live Coding Sessions',
+    videoCount: 15,
+    thumbnail: '/thumbnails/playlist3.jpg',
+    views: '890K'
+  }
+];
 
 export default function ChannelPage() {
   const router = useRouter();
   const { id } = router.query;
-  const [isMobile, setIsMobile] = useState(false);
-  const [activeTab, setActiveTab] = useState('videos'); // 'videos', 'about'
   const [channel, setChannel] = useState(null);
-  const [channelVideos, setChannelVideos] = useState([]);
+  const [videos, setVideos] = useState([]);
+  const [activeTab, setActiveTab] = useState('videos');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Mock channel data - In real app, you'd fetch this based on channel ID
-  const mockChannels = {
-    'codewithharry': {
-      id: 'codewithharry',
-      name: 'CodeWithHarry',
-      description: 'Learn programming with easy-to-understand tutorials. Python, JavaScript, Web Development and more!',
-      avatar: '/avatars/1.jpg',
-      banner: '/banners/1.jpg',
-      subscribers: '1.2M',
-      totalVideos: '245',
-      totalViews: '45M',
-      joinDate: 'Mar 15, 2019',
-      verified: true,
-      links: {
-        website: 'https://codewithharry.com',
-        twitter: 'https://twitter.com/codewithharry',
-        instagram: 'https://instagram.com/codewithharry'
-      }
-    },
-    'traversymedia': {
-      id: 'traversymedia',
-      name: 'Traversy Media',
-      description: 'Web development and programming tutorials for all levels. Focusing on modern technologies and best practices.',
-      avatar: '/avatars/3.jpg',
-      banner: '/banners/3.jpg',
-      subscribers: '2.1M',
-      totalVideos: '890',
-      totalViews: '210M',
-      joinDate: 'Jan 5, 2015',
-      verified: true,
-      links: {
-        website: 'https://traversymedia.com',
-        twitter: 'https://twitter.com/traversymedia'
-      }
-    },
-    'thenetninja': {
-      id: 'thenetninja',
-      name: 'The Net Ninja',
-      description: 'Full-stack web development tutorials. React, Vue, Node.js, Firebase and much more!',
-      avatar: '/avatars/4.jpg',
-      banner: '/banners/4.jpg',
-      subscribers: '850K',
-      totalVideos: '420',
-      totalViews: '68M',
-      joinDate: 'Jun 20, 2017',
-      verified: false,
-      links: {
-        website: 'https://thenetninja.co.uk'
-      }
+  useEffect(() => {
+    if (id) {
+      // Simulate API calls
+      setLoading(true);
+      setTimeout(() => {
+        const channelData = mockChannels[id];
+        const channelVideos = mockVideos[id] || [];
+
+        if (channelData) {
+          setChannel(channelData);
+          setVideos(channelVideos);
+          setError(null);
+        } else {
+          setError('Channel not found');
+        }
+        setLoading(false);
+      }, 1000);
+    }
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-dark-950 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-cyan-400 text-lg">Loading channel...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !channel) {
+    return (
+      <div className="min-h-screen bg-dark-950 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-6xl mb-4">😕</div>
+          <h1 className="text-2xl font-bold text-white mb-2">Channel Not Found</h1>
+          <p className="text-gray-400 mb-6">The channel you're looking for doesn't exist.</p>
+          <button
+            onClick={() => router.push('/')}
+            className="bg-cyan-500 hover:bg-cyan-600 text-white px-6 py-3 rounded-2xl transition-colors"
+          >
+            Back to Home
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'videos':
+        return <VideoGrid videos={videos} />;
+      case 'about':
+        return <AboutTab channel={channel} />;
+      case 'community':
+        return <CommunityTab posts={mockCommunityPosts} channelId={channel.id} />;
+      case 'playlists':
+        return <PlaylistsTab playlists={mockPlaylists} />;
+      default:
+        return <VideoGrid videos={videos} />;
     }
   };
 
-  // Mock videos data
-  const allVideos = [
-    {
-      id: '1',
-      title: 'Build and Deploy a Modern YouTube Clone with React & Next.js',
-      thumbnail: '/thumbnails/1.jpg',
-      views: '152K',
-      timestamp: '2 days ago',
-      channel: 'CodeWithHarry',
-      channelId: 'codewithharry',
-      duration: '28:15',
-      likes: '15K'
-    },
-    {
-      id: '2',
-      title: 'Python Django Full Course for Beginners | Build 3 Projects',
-      thumbnail: '/thumbnails/6.jpg',
-      views: '95K',
-      timestamp: '4 days ago',
-      channel: 'CodeWithHarry',
-      channelId: 'codewithharry',
-      duration: '2:15:40',
-      likes: '8.2K'
-    },
-    {
-      id: '3',
-      title: 'Learn Tailwind CSS in 1 Hour - Complete Crash Course 2024',
-      thumbnail: '/thumbnails/3.jpg',
-      views: '210K',
-      timestamp: '3 days ago',
-      channel: 'Traversy Media',
-      channelId: 'traversymedia',
-      duration: '1:05:22',
-      likes: '12K'
-    },
-    {
-      id: '4',
-      title: 'JavaScript Modern Features You Must Know in 2024 - ES6+',
-      thumbnail: '/thumbnails/4.jpg',
-      views: '120K',
-      timestamp: '5 days ago',
-      channel: 'The Net Ninja',
-      channelId: 'thenetninja',
-      duration: '35:47',
-      likes: '6.5K'
-    },
-    {
-      id: '5',
-      title: 'React TypeScript Tutorial - Build a Portfolio Website',
-      thumbnail: '/thumbnails/8.jpg',
-      views: '64K',
-      timestamp: '3 weeks ago',
-      channel: 'CodeWithHarry',
-      channelId: 'codewithharry',
-      duration: '38:12',
-      likes: '4.2K'
-    },
-    {
-      id: '6',
-      title: 'Node.js Backend Development - REST API with Express',
-      thumbnail: '/thumbnails/10.jpg',
-      views: '85K',
-      timestamp: '3 days ago',
-      channel: 'Traversy Media',
-      channelId: 'traversymedia',
-      duration: '1:15:30',
-      likes: '7.8K'
-    }
-  ];
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-
-    // Load channel data and videos when ID changes
-    if (id && mockChannels[id]) {
-      setChannel(mockChannels[id]);
-      // Filter videos for this channel
-      const videos = allVideos.filter(video => video.channelId === id);
-      setChannelVideos(videos);
-    }
-
-    return () => window.removeEventListener('resize', checkMobile);
-  }, [id]);
-
-  if (!channel) {
-    return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <div>Channel not found</div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-dark-950 text-white">
       <Head>
-        <title>{channel.name} - MyTube</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <title>{channel.name} - SonicVision</title>
+        <meta name="description" content={channel.description} />
+        <meta property="og:title" content={channel.name} />
+        <meta property="og:description" content={channel.description} />
+        <meta property="og:image" content={channel.avatar} />
       </Head>
 
-            {/* Header */}
-      <header className="flex items-center justify-between px-3 sm:px-4 py-3 bg-black border-b border-gray-800 sticky top-0 z-50">
-        <div className="flex items-center space-x-4">
-          <button
-            onClick={() => router.back()}
-            className="p-2 hover:bg-gray-900 rounded-full transition-colors"
-          >
-            <ArrowLeft size={isMobile ? 20 : 24} />
-          </button>
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-red-600 rounded flex items-center justify-center">
-              <Video size={16} className="text-white" />
-            </div>
-            {!isMobile && <span className="text-lg font-bold">MyTube</span>}
-          </div>
-        </div>
+      <ParticleBackground />
+      <div className="fixed inset-0 cyber-grid opacity-20 pointer-events-none z-1"></div>
 
-        <div className="flex items-center space-x-3">
-          <button className="p-2 hover:bg-gray-900 rounded-full transition-colors">
-            <Search size={20} />
-          </button>
-          <button className="p-2 hover:bg-gray-900 rounded-full transition-colors">
-            <Bell size={20} />
-          </button>
-          {/* ADD WALLET CONNECT HERE */}
-          <SonicWalletConnect />
-        </div>
-      </header>
+      {/* Channel Header */}
+      <ChannelHeader channel={channel} />
 
-      {/* Channel Banner */}
-      <div className="relative">
-        <div className="h-32 sm:h-48 bg-gradient-to-r from-purple-600 to-blue-600"></div>
+      {/* Channel Content */}
+      <div className="container mx-auto px-4 py-6">
+        {/* Tabs Navigation */}
+        <ChannelTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
-        {/* Channel Info Overlay */}
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4 sm:p-6">
-          <div className="max-w-6xl mx-auto">
-            <div className="flex flex-col sm:flex-row items-start sm:items-end space-y-4 sm:space-y-0 sm:space-x-6">
-              {/* Channel Avatar */}
-              <div className="w-20 h-20 sm:w-32 sm:h-32 bg-gray-700 rounded-full border-4 border-black flex items-center justify-center">
-                <User size={isMobile ? 24 : 32} className="text-gray-400" />
-              </div>
-
-              {/* Channel Details */}
-              <div className="flex-1 text-white">
-                <div className="flex items-center space-x-2 mb-2">
-                  <h1 className="text-xl sm:text-3xl font-bold">{channel.name}</h1>
-                  {channel.verified && (
-                    <span className="text-blue-400 text-sm sm:text-base">✓</span>
-                  )}
-                </div>
-                <div className="flex flex-wrap items-center space-x-4 text-sm sm:text-base text-gray-300">
-                  <span>@{channel.id}</span>
-                  <span>{channel.subscribers} subscribers</span>
-                  <span>{channel.totalVideos} videos</span>
-                </div>
-              </div>
-
-              {/* Subscribe Button */}
-              <button className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-full font-semibold transition-colors">
-                Subscribe
-              </button>
-            </div>
-          </div>
+        {/* Tab Content */}
+        <div className="mt-6">
+          {renderTabContent()}
         </div>
       </div>
 
-      {/* Navigation Tabs */}
-      <div className="border-b border-gray-800 bg-black sticky top-14 z-40">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex">
-            <button
-              onClick={() => setActiveTab('videos')}
-              className={`px-4 sm:px-6 py-3 font-medium transition-colors border-b-2 ${
-                activeTab === 'videos'
-                  ? 'text-white border-white'
-                  : 'text-gray-400 border-transparent hover:text-white'
-              }`}
-            >
-              VIDEOS
-            </button>
-            <button
-              onClick={() => setActiveTab('about')}
-              className={`px-4 sm:px-6 py-3 font-medium transition-colors border-b-2 ${
-                activeTab === 'about'
-                  ? 'text-white border-white'
-                  : 'text-gray-400 border-transparent hover:text-white'
-              }`}
-            >
-              ABOUT
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <main className="max-w-6xl mx-auto p-4 sm:p-6">
-        {activeTab === 'videos' && (
-          <VideosTab videos={channelVideos} isMobile={isMobile} />
-        )}
-
-        {activeTab === 'about' && (
-          <AboutTab channel={channel} />
-        )}
-      </main>
+      <ConnectionStatus />
     </div>
   );
 }
-
-// Videos Tab Component
-function VideosTab({ videos, isMobile }) {
-  const router = useRouter();
-
-  if (videos.length === 0) {
-    return (
-      <div className="text-center py-16">
-        <Video size={64} className="text-gray-600 mx-auto mb-4" />
-        <h3 className="text-xl font-semibold text-gray-400 mb-2">No videos yet</h3>
-        <p className="text-gray-500">This channel hasn't uploaded any videos.</p>
-      </div>
-    );
-  }
-
-  return (
-    <div className={isMobile ? "space-y-4" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"}>
-      {videos.map(video => (
-        <div
-          key={video.id}
-          onClick={() => router.push(`/watch/${video.id}`)}
-          className="cursor-pointer group"
-        >
-          {/* Thumbnail */}
-          <div className="relative aspect-video bg-gray-800 rounded-lg overflow-hidden mb-3">
-            <div className="w-full h-full bg-gradient-to-br from-gray-700 to-gray-600 flex items-center justify-center">
-              <span className="text-gray-400 text-sm">Thumbnail</span>
-            </div>
-            <div className="absolute bottom-2 right-2 bg-black bg-opacity-80 text-white text-xs px-1.5 py-0.5 rounded">
-              {video.duration}
-            </div>
-          </div>
-
-          {/* Video Info */}
-          <div className="flex space-x-3">
-            <div className="flex-1 min-w-0">
-              <h3 className="font-medium text-sm line-clamp-2 group-hover:text-blue-400 transition-colors mb-1 text-white">
-                {video.title}
-              </h3>
-              <div className="flex items-center text-gray-400 text-xs space-x-2">
-                <span>{video.views} views</span>
-                <span>•</span>
-                <span>{video.timestamp}</span>
-              </div>
-              <div className="flex items-center text-gray-400 text-xs mt-1">
-                <ThumbsUp size={12} className="mr-1" />
-                <span>{video.likes}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-// About Tab Component
-function AboutTab({ channel }) {
-  return (
-    <div className="space-y-6 max-w-3xl">
-      {/* Channel Description */}
-      <div>
-        <h3 className="text-lg font-semibold text-white mb-3">Description</h3>
-        <p className="text-gray-300 leading-relaxed">
-          {channel.description}
-        </p>
-      </div>
-
-      {/* Channel Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="bg-gray-800 rounded-lg p-4 text-center">
-          <Users size={24} className="text-red-400 mx-auto mb-2" />
-          <div className="text-white font-semibold">{channel.subscribers}</div>
-          <div className="text-gray-400 text-sm">Subscribers</div>
-        </div>
-        <div className="bg-gray-800 rounded-lg p-4 text-center">
-          <Play size={24} className="text-blue-400 mx-auto mb-2" />
-          <div className="text-white font-semibold">{channel.totalVideos}</div>
-          <div className="text-gray-400 text-sm">Videos</div>
-        </div>
-        <div className="bg-gray-800 rounded-lg p-4 text-center">
-          <Eye size={24} className="text-green-400 mx-auto mb-2" />
-          <div className="text-white font-semibold">{channel.totalViews}</div>
-          <div className="text-gray-400 text-sm">Total Views</div>
-        </div>
-        <div className="bg-gray-800 rounded-lg p-4 text-center">
-          <Calendar size={24} className="text-yellow-400 mx-auto mb-2" />
-          <div className="text-white font-semibold">{channel.joinDate}</div>
-          <div className="text-gray-400 text-sm">Joined</div>
-        </div>
-      </div>
-
-      {/* Links */}
-      {channel.links && Object.keys(channel.links).length > 0 && (
-        <div>
-          <h3 className="text-lg font-semibold text-white mb-3">Links</h3>
-          <div className="space-y-2">
-            {channel.links.website && (
-              <a href={channel.links.website} target="_blank" rel="noopener noreferrer"
-                 className="flex items-center space-x-2 text-blue-400 hover:text-blue-300 transition-colors">
-                <Globe size={16} />
-                <span>Website</span>
-              </a>
-            )}
-            {channel.links.twitter && (
-              <a href={channel.links.twitter} target="_blank" rel="noopener noreferrer"
-                 className="flex items-center space-x-2 text-blue-400 hover:text-blue-300 transition-colors">
-                <Twitter size={16} />
-                <span>Twitter</span>
-              </a>
-            )}
-            {channel.links.instagram && (
-              <a href={channel.links.instagram} target="_blank" rel="noopener noreferrer"
-                 className="flex items-center space-x-2 text-pink-400 hover:text-pink-300 transition-colors">
-                <Instagram size={16} />
-                <span>Instagram</span>
-              </a>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-

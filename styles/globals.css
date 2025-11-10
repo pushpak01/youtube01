@@ -1,31 +1,110 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0a0a0f;
+  --foreground: #ffffff;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: 'Inter', var(--font-geist-sans);
+  --font-mono: 'JetBrains Mono', var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0a0a0f;
+    --foreground: #ffffff;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
 }
 
-/* Custom utilities for YouTube clone */
+/* Enhanced Particle Background */
+.particle-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Animated Gradient Background */
+.animated-gradient-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(-45deg, #0f0f23, #1a1a2e, #16213e, #0a0a0f);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+  z-index: -1;
+}
+
+/* Floating Shapes Background */
+.floating-shapes {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.floating-shapes::before,
+.floating-shapes::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 243, 255, 0.1) 0%, transparent 70%);
+  animation: floatShape 20s linear infinite;
+}
+
+.floating-shapes::before {
+  width: 300px;
+  height: 300px;
+  top: 10%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.floating-shapes::after {
+  width: 200px;
+  height: 200px;
+  top: 60%;
+  left: 80%;
+  animation-delay: -10s;
+}
+
+/* Grid Animation */
+.animated-grid {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    linear-gradient(rgba(0, 243, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 243, 255, 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: gridMove 20s linear infinite;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Custom utilities for SonicVision */
 .line-clamp-2 {
   overflow: hidden;
   display: -webkit-box;
@@ -33,19 +112,223 @@ body {
   -webkit-line-clamp: 2;
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera */
+.line-clamp-3 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+/* Scrollbar Styling */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
 
-/* Hide scrollbar for IE, Edge and Firefox */
 .scrollbar-hide {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-/* Ensure black background for YouTube dark theme */
-.youtube-dark {
-  background: #000000 !important;
-  color: #ffffff !important;
+.scrollbar-glow::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-glow::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-glow::-webkit-scrollbar-thumb {
+  background: #00f3ff;
+  border-radius: 12px;
+  box-shadow: 0 0 4px #00f3ff;
+}
+
+.scrollbar-glow {
+  scrollbar-width: thin;
+  scrollbar-color: #00f3ff transparent;
+}
+
+/* Text Effects */
+.text-gradient-rainbow {
+  background: linear-gradient(45deg, #ff0080, #ff8c00, #40e0d0, #20b2aa, #9370db, #ff0080);
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientFlow 12s ease infinite;
+}
+
+.text-neon {
+  color: #00f3ff;
+  text-shadow: 0 0 3px currentColor, 0 0 6px currentColor;
+}
+
+/* Glass Morphism */
+.glass-morphism {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Card Components */
+.card-holographic {
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.08) 0%, rgba(139, 92, 246, 0.08) 50%, rgba(236, 72, 153, 0.08) 100%);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.25rem;
+  box-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.2), 0 0 24px rgba(14, 165, 233, 0.15);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-holographic:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.25), 0 0 32px rgba(139, 92, 246, 0.2);
+}
+
+.card-holographic::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.08) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform 0.8s ease;
+}
+
+.card-holographic:hover::after {
+  transform: translateX(100%);
+}
+
+/* Shadow Utilities */
+.shadow-neon-blue {
+  box-shadow: 0 0 3px #00f3ff, 0 0 6px #00f3ff, 0 0 9px #00f3ff;
+}
+
+.shadow-neon-purple {
+  box-shadow: 0 0 3px #b967ff, 0 0 6px #b967ff, 0 0 9px #b967ff;
+}
+
+.shadow-neon-pink {
+  box-shadow: 0 0 3px #ff2d95, 0 0 6px #ff2d95, 0 0 9px #ff2d95;
+}
+
+.shadow-neon-green {
+  box-shadow: 0 0 3px #00ff88, 0 0 6px #00ff88, 0 0 9px #00ff88;
+}
+
+/* Ensure smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection colors */
+::selection {
+  background: rgba(0, 243, 255, 0.2);
+  color: white;
+}
+
+::-moz-selection {
+  background: rgba(0, 243, 255, 0.2);
+  color: white;
+}
+
+/* Focus styles for accessibility */
+button:focus-visible,
+input:focus-visible,
+a:focus-visible {
+  outline: 2px solid #00f3ff;
+  outline-offset: 1px;
+  border-radius: 4px;
+}
+
+/* Custom gradient backgrounds */
+.bg-sonic-rainbow {
+  background: linear-gradient(45deg, #ff0080, #ff8c00, #40e0d0, #20b2aa, #9370db, #ff0080);
+  background-size: 400% 400%;
+  animation: gradientFlow 12s ease infinite;
+}
+
+.bg-galaxy {
+  background: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+}
+
+/* Content wrapper to ensure content stays above background */
+.content-wrapper {
+  position: relative;
+  z-index: 10;
+}
+
+/* Animations */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes floatShape {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 0.5;
+  }
+  25% {
+    transform: translate(100px, -50px) rotate(90deg);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate(200px, 50px) rotate(180deg);
+    opacity: 0.5;
+  }
+  75% {
+    transform: translate(100px, 150px) rotate(270deg);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(0, 0) rotate(360deg);
+    opacity: 0.5;
+  }
+}
+
+@keyframes gridMove {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(50px, 50px);
+  }
+}
+
+@keyframes gradientFlow {
+  0%, 100% {
+    background-position: 0% 50%;
+    background-size: 200% 200%;
+  }
+  50% {
+    background-position: 100% 50%;
+    background-size: 200% 200%;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .animated-gradient-bg,
+  .floating-shapes,
+  .animated-grid {
+    animation: none !important;
+  }
 }

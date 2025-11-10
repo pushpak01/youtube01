@@ -1,10 +1,16 @@
-import '../styles/globals.css'
-import { SonicWalletProvider } from '../contexts/SonicWalletContext'
+import '../styles/globals.css';
+import { WalletProvider } from '../context/WalletContext';
+import WalletSelectionModal from '../components/WalletSelectionModal';
+import WalletConnectQR from '../components/WalletConnectQR';
+import ProfileCreationModal from '../components/ProfileCreationModal';
 
 export default function MyApp({ Component, pageProps }) {
   return (
-    <SonicWalletProvider>
+    <WalletProvider>
       <Component {...pageProps} />
-    </SonicWalletProvider>
-  )
+      <WalletSelectionModal />
+      <WalletConnectQR />
+      <ProfileCreationModal />
+    </WalletProvider>
+  );
 }

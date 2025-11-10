@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
-import SonicWalletConnect from '../components/SonicWalletConnect';
+
 import {
   Search, ArrowLeft, Filter, User, Clock,
   Home as HomeIcon, Compass, PlaySquare, Library
@@ -190,7 +190,7 @@ export default function SearchPage() {
               </button>
             </>
           )}
-          <SonicWalletConnect />
+
         </div>
       </header>
 

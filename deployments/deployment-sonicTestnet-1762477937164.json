@@ -1,0 +1,12 @@
+{
+  "network": "sonicTestnet",
+  "chainId": "14601",
+  "contractName": "UserProfileDebug",
+  "contractAddress": "0x61b5d033f2babBd348155177CE29AfDE639062EC",
+  "deployer": "0xbe4041Bf23845aE87f9279a09B0F751C78212d4f",
+  "transactionHash": "0xbe55d936335837d422ad441ef410ff25ae6daf978c2a4dc1e16bd2bb97721790",
+  "blockNumber": "4455488",
+  "timestamp": "2025-11-07T01:12:17.161Z",
+  "gasUsed": "1434139",
+  "totalCost": "0.004302417"
+}

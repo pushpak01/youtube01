@@ -1,0 +1,40 @@
+{
+  "_format": "hh-sol-cache-2",
+  "files": {
+    "C:\\Users\\pushp\\PycharmProjects\\PythonProject13\\youtube\\contracts\\UserProfile.sol": {
+      "lastModificationDate": 1762476995746,
+      "contentHash": "d10a3f5f6c2566262872a5738c9aa175",
+      "sourceName": "contracts/UserProfile.sol",
+      "solcConfig": {
+        "version": "0.8.19",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.19"
+      ],
+      "artifacts": [
+        "UserProfileDebug"
+      ]
+    }
+  }
+}
